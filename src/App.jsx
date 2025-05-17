@@ -8,6 +8,7 @@ import LoginPage from './components/pages/LoginPage';
 import RegisterPage from './components/pages/RegisterPage';
 import BookingPage from './components/pages/BookingPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminLogin from "./components/pages/AdminLogin";
 
 
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/bookings" element={<BookingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+         <Route path="/admin-login" element={<AdminLogin />} />
       </Routes>
 
     </>
