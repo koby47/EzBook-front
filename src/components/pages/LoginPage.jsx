@@ -1,85 +1,110 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../../services/api.js";
+import { api } from "../../../services/api";
+import { toast } from "react-toastify";
+import { auth, provider, signInWithPopup } from "../../../services/firebase"; // adjust path based on your structure
 
-export default function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+const LoginPage = () => {
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
     try {
-      const res = await api.login(form);
-      if (res?.token) {
-        const role = res.user?.role;
-        if (role === "admin") {
-          return setError("Admins must use the admin login page.");
-        }
-        navigate("/dashboard");
+      const data = await api.login(formData);
+      if (data.user.role === "admin") {
+        throw new Error("Not authorized to access");
       }
+      login(data.user);
+      toast.success("Login successful!");
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
+      setError(err.message);
+      toast.error(err.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError("");
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const googleUser = result.user;
+      const credential = await googleUser.getIdToken();
+
+      // Send token to backend
+      const data = await api.loginWithGoogle(credential);
+
+      if (data.user.role === "admin") {
+        throw new Error("Not authorized to access");
+      }
+
+      login(data.user);
+      toast.success("Google login successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white shadow-lg p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Welcome back 👋</h2>
-        <p className="text-sm text-gray-500 text-center mb-6">Sign in to your EzBook account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4">
+        <h2 className="text-2xl font-bold text-center">Login</h2>
 
-        {error && <div className="bg-red-100 text-red-600 px-3 py-2 rounded mb-4">{error}</div>}
+        {error && <div className="text-red-600 text-sm">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <input
-            type="password"
-            name="password"
-            required
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
 
-        {/* Social Login for User/Manager */}
-        <div className="mt-6 text-center text-sm text-gray-500">or sign in with</div>
-        <div className="mt-4 space-y-2">
-          <button className="w-full flex items-center justify-center border rounded py-2 hover:bg-gray-100">
-            <img src="/google-logo.png" alt="Google" className="h-5 w-5 mr-2" />
-            Sign in with Google
-          </button>
-          <button className="w-full flex items-center justify-center border rounded py-2 hover:bg-gray-100">
-            <img src="/apple-logo.png" alt="Apple" className="h-5 w-5 mr-2" />
-            Sign in with Apple
-          </button>
-        </div>
-      </div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition"
+        >
+          Login
+        </button>
+
+        <div className="text-center text-gray-500">or</div>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full border border-gray-300 hover:bg-gray-100 py-2 rounded flex items-center justify-center gap-2"
+        >
+          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+          Continue with Google
+        </button>
+
+        <p className="text-center text-sm text-gray-500 mt-2">
+          Only <span className="font-medium">User</span> and <span className="font-medium">Manager</span> roles can log in here.
+        </p>
+      </form>
     </div>
   );
-}
+};
+
+export default LoginPage;
