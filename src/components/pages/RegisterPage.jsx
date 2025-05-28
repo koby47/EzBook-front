@@ -127,7 +127,7 @@ const RegisterPage = () => {
           onClick={handleGoogleSignup}
           className="w-full border border-gray-300 py-2 rounded flex items-center justify-center gap-2 hover:bg-gray-100"
         >
-          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+          <img src="/google.svg" alt="Google" className="w-5 h-5" />
           Continue with Google
         </button>
       </form>
