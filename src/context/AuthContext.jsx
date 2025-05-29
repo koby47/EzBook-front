@@ -8,19 +8,23 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem("user");
-      if (savedUser && savedUser !== "undefined") {
-        setUser(JSON.parse(savedUser));
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        if (parsed && typeof parsed === "object") {
+          setUser(parsed);
+        }
       }
     } catch (err) {
       console.error("Invalid user data in localStorage:", err);
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
   }, []);
 
   const login = (userData) => {
     setUser(userData.user);
     localStorage.setItem("user", JSON.stringify(userData.user));
-    localStorage.setItem("token", userData.token); // store token
+    localStorage.setItem("token", userData.token);
   };
 
   const logout = () => {
@@ -33,5 +37,5 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
-  );
+  );
 };

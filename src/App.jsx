@@ -1,24 +1,19 @@
-import { useState } from 'react'
-import './App.css'
-import NavBar from './components/NavBar'
-import { Link } from "react-router-dom"
+import './App.css';
+import NavBar from './components/NavBar';
 import HomePage from './components/pages/HomePage';
 import FacilitiesPage from './components/pages/FacilitiesPage';
 import LoginPage from './components/pages/LoginPage';
 import RegisterPage from './components/pages/RegisterPage';
 import BookingPage from './components/pages/BookingPage';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminLogin from "./components/pages/AdminLogin";
-import UserDashboard from './components/Dashboard/UserDashboard';
-
+import AdminLogin from './components/pages/AdminLogin';
+import { Routes, Route } from 'react-router-dom';
+import PrivateRoute from "./components/routes/PrivateRoute";
+import UserDashboardLayout from './components/Dashboard/UserDashboardLayout';
 
 function App() {
-  
-
   return (
     <>
-    <NavBar/>
-
+      <NavBar />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -26,12 +21,15 @@ function App() {
         <Route path="/bookings" element={<BookingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-         <Route path="/admin-login" element={<AdminLogin />} />
-         <Route path='/dashboard' element={<UserDashboard/>} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/dashboard" element={
+         <PrivateRoute>
+      <UserDashboardLayout />
+    </PrivateRoute>
+} />
       </Routes>
-
     </>
-  )
+  );
 }
 
-export default App
+export default App;
