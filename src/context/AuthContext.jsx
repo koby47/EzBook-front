@@ -1,35 +1,37 @@
 import { createContext, useState, useEffect } from "react";
 
-// Create context
 export const AuthContext = createContext();
 
-// Create provider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage (persist login)
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    try {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser && savedUser !== "undefined") {
+        setUser(JSON.parse(savedUser));
+      }
+    } catch (err) {
+      console.error("Invalid user data in localStorage:", err);
+      localStorage.removeItem("user");
     }
   }, []);
 
-  // Login function
   const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData.user);
+    localStorage.setItem("user", JSON.stringify(userData.user));
+    localStorage.setItem("token", userData.token); // store token
   };
 
-  // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
-  );
+  );
 };

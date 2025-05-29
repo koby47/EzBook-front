@@ -13,7 +13,7 @@ const dummyFacilities = [
     type: "hotel",
     location: "Accra",
     price: 300,
-    pictures: ["https://via.placeholder.com/300x200"],
+    pictures: [""],
   },
   {
     _id: "2",
@@ -22,7 +22,7 @@ const dummyFacilities = [
     type: "hall",
     location: "Kumasi",
     price: 800,
-    pictures: ["https://via.placeholder.com/300x200"],
+    pictures: [""],
   },
   {
     _id: "3",
@@ -31,7 +31,7 @@ const dummyFacilities = [
     type: "conference room",
     location: "Cape Coast",
     price: 500,
-    pictures: ["https://via.placeholder.com/300x200"],
+    pictures: [""],
   },
 ];
 

@@ -3,7 +3,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../services/api";
 import { toast } from "react-toastify";
-import { auth, provider, signInWithPopup } from "../../../services/firebase"; // adjust path based on your structure
+import { auth, provider, signInWithPopup } from "../../../services/firebase"; 
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -24,7 +24,7 @@ const LoginPage = () => {
       if (data.user.role === "admin") {
         throw new Error("Not authorized to access");
       }
-      login(data.user);
+      login(data);
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
@@ -47,7 +47,7 @@ const LoginPage = () => {
         throw new Error("Not authorized to access");
       }
 
-      login(data.user);
+      login(data);
       toast.success("Google login successful!");
       navigate("/dashboard");
     } catch (err) {
