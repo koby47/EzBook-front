@@ -52,7 +52,7 @@ const UserDashboardLayout = () => {
             className="fixed inset-y-0 left-0 w-64 bg-white z-40 shadow-lg flex flex-col"
           >
             {/* Drawer Header with Avatar */}
-            <div className="flex items-center justify-between px-4 py-3 border-b shadow-sm">
+            <div className="flex items-center justify-between px-4 py-3 shadow-sm">
               <div className="flex items-center gap-3">
                 {user?.photo ? (
                   <img
@@ -77,10 +77,15 @@ const UserDashboardLayout = () => {
               </button>
             </div>
 
-            {/* Sidebar Tabs */}
-            <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
+            {/* Sidebar Tabs (with logout button passed via props) */}
+            <Sidebar
+              activeTab={activeTab}
+              setActiveTab={handleTabChange}
+              isMobile={isMobile}
+              setSidebarOpen={setSidebarOpen}
+            />
 
-            {/* Optional Bottom Close Button */}
+            {/* Optional bottom "Close Menu" button */}
             <div className="mt-auto p-4 md:hidden">
               <button
                 onClick={() => setSidebarOpen(false)}
@@ -96,11 +101,16 @@ const UserDashboardLayout = () => {
       {/* Desktop Sidebar */}
       {!isMobile && (
         <div className="hidden md:flex">
-          <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
+          <Sidebar
+            activeTab={activeTab}
+            setActiveTab={handleTabChange}
+            isMobile={isMobile}
+            setSidebarOpen={setSidebarOpen}
+          />
         </div>
       )}
 
-      {/* Main Content */}
+      {/* Main Dashboard Content */}
       <div className="flex-1 p-4 md:p-6 mt-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -115,24 +125,31 @@ const UserDashboardLayout = () => {
         </AnimatePresence>
       </div>
 
-      {/* ✅ Floating Menu Button (Mobile only) */}
-      {!sidebarOpen && isMobile && (
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed bottom-5 right-5 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition duration-200 md:hidden"
-          aria-label="Open menu"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+      {/* Floating Menu Button (mobile only) */}
+      <AnimatePresence>
+        {!sidebarOpen && isMobile && (
+          <motion.button
+            key="float-menu"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.4 }}
+            onClick={() => setSidebarOpen(true)}
+            className="fixed bottom-5 right-5 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition duration-200 md:hidden"
+            aria-label="Open menu"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,16 +1,38 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { getInitials } from "../../../utils/getInitials";
-import { UserCircle, Building2, CalendarDays, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { UserCircle, Building2, CalendarDays } from "lucide-react";
+import { toast } from "react-toastify";
 
+// Tabs with icons
 const tabs = [
   { id: "profile", label: "Profile", icon: UserCircle },
   { id: "facilities", label: "Facilities", icon: Building2 },
   { id: "bookings", label: "Bookings", icon: CalendarDays },
 ];
 
-const Sidebar = ({ activeTab, setActiveTab }) => {
+const Sidebar = ({ activeTab, setActiveTab, isMobile, setSidebarOpen }) => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setLoggingOut(true);
+    toast.info("Logging out...");
+
+    setTimeout(() => {
+      logout();
+      setLoggingOut(false);
+
+      if (isMobile && setSidebarOpen) {
+        setSidebarOpen(false);
+      }
+
+      toast.success("Logout successful");
+      navigate("/login");
+    }, 1200);
+  };
 
   return (
     <div className="w-full h-full flex flex-col items-center py-4">
@@ -29,7 +51,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         )}
         <div className="hidden lg:flex flex-col items-center text-center">
           <p className="text-sm font-semibold text-blue-700">{user?.name}</p>
-          <p className="text-xs p-5 text-gray-400">{user?.email}</p>
+          <p className="text-xs pt-1 text-gray-400">{user?.email}</p>
         </div>
       </div>
 
@@ -54,13 +76,25 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         ))}
       </ul>
 
-      {/* Logout Button */}
-      <button
-        onClick={logout}
-        className="mt-auto mb-2 text-xs text-red-500 hover:underline"
-      >
-        <LogOut size={16} className="inline mr-1" /> Logout
-      </button>
+      {/* Mobile-only Logout button at bottom */}
+      {isMobile && (
+        <div className="mt-auto pt-4 w-full md:hidden px-4">
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full bg-red-50 text-red-600 py-2 rounded hover:bg-red-100 flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+          >
+            {loggingOut ? (
+              <>
+                <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                Logging out...
+              </>
+            ) : (
+              "Logout"
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
