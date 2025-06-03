@@ -37,7 +37,7 @@ const Sidebar = ({ activeTab, setActiveTab, isMobile, setSidebarOpen }) => {
   return (
     <div className="w-full h-full flex flex-col items-center py-4">
       {/* Avatar */}
-      <div className="flex flex-col items-center space-y-2 mb-6">
+      <div className="flex flex-col items-center ml-3 space-y-2 mb-6">
         {user?.photo ? (
           <img
             src={user.photo}

@@ -39,12 +39,38 @@ export const api = {
     const res = await axiosInstance.post("/api/bookings", bookingData);
     return res.data;
   },
+  async cancelBooking(id) {
+  const res = await axiosInstance.patch(`/api/bookings/${id}`, {
+    status: "cancelled",
+  });
+  return res.data;
+},
+
 
   // Get user's bookings
   async getMyBookings() {
     const res = await axiosInstance.get("/api/bookings/mine");
     return res.data;
   },
+  async exportBookingsPDF() {
+  const res = await axiosInstance.get("/api/bookings/mine/pdf", {
+    responseType: "blob",
+  });
+
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", "EzBook-Bookings.pdf");
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+,
+async userUpdateBooking(id, payload) {
+  const res = await axiosInstance.patch(`/api/bookings/user/${id}`, payload);
+  return res.data;
+}
+,
 
   // Create a new facility (with image upload)
   async createFacility(facilityData) {
@@ -65,4 +91,6 @@ export const api = {
 
     return res.data;
   }
+  
 };
+
