@@ -39,12 +39,7 @@ export const api = {
     const res = await axiosInstance.post("/api/bookings", bookingData);
     return res.data;
   },
-  async cancelBooking(id) {
-  const res = await axiosInstance.patch(`/api/bookings/${id}`, {
-    status: "cancelled",
-  });
-  return res.data;
-},
+ 
 
 
   // Get user's bookings
@@ -67,10 +62,18 @@ export const api = {
 }
 ,
 async userUpdateBooking(id, payload) {
+  if (!id) throw new Error("Booking ID is missing");
   const res = await axiosInstance.patch(`/api/bookings/user/${id}`, payload);
   return res.data;
-}
-,
+},
+ async cancelBooking(id) {
+  const res = await axiosInstance.patch(`/api/bookings/user/${id}`, {
+    status: "cancelled",
+  });
+  return res.data;
+},
+
+
 
   // Create a new facility (with image upload)
   async createFacility(facilityData) {

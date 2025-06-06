@@ -9,10 +9,11 @@ const EditBookingModal = ({ isOpen, onClose, booking, onSave }) => {
     package: "",
   });
 
+  // Populate form when a booking is passed
   useEffect(() => {
     if (booking) {
       setForm({
-        date: booking.date?.slice(0, 10),
+        date: booking.date?.slice(0, 10) || "",
         startTime: booking.startTime || "",
         endTime: booking.endTime || "",
         package: booking.package || "",
@@ -21,11 +22,23 @@ const EditBookingModal = ({ isOpen, onClose, booking, onSave }) => {
   }, [booking]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = () => {
-    onSave(form); // parent handles API and closing
+    if (!form.date || !form.startTime) {
+      alert("Date and start time are required");
+      return;
+    }
+
+    // Pass both form and booking._id
+    onSave({
+      ...form,
+      bookingId: booking.id,
+    });
   };
 
   if (!isOpen || !booking) return null;
@@ -61,7 +74,7 @@ const EditBookingModal = ({ isOpen, onClose, booking, onSave }) => {
           name="package"
           value={form.package}
           onChange={handleChange}
-          placeholder="Package"
+          placeholder="Package (optional)"
           className="w-full border px-3 py-2 rounded"
         />
 

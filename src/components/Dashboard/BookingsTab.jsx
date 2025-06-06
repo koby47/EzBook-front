@@ -2,17 +2,18 @@ import { useEffect, useState, useContext } from "react";
 import { api } from "../../../services/api";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/AuthContext";
-import EditBookingModal from "../Modals/EditBookingModal"; // Make sure this file exists
+import EditBookingModal from "../Modals/EditBookingModal";
 
 const BookingsTab = () => {
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // modal control
+  // Modal state
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
+  // Fetch bookings
   const fetchBookings = async () => {
     setLoading(true);
     try {
@@ -45,8 +46,15 @@ const BookingsTab = () => {
   };
 
   const handleSaveEdit = async (formData) => {
+    const { bookingId, ...payload } = formData;
+
+    if (!bookingId) {
+      toast.error("Missing booking ID");
+      return;
+    }
+
     try {
-      await api.userUpdateBooking(selectedBooking._id, formData);
+      await api.userUpdateBooking(bookingId, payload);
       toast.success("Booking updated");
       setShowModal(false);
       setSelectedBooking(null);

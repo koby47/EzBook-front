@@ -10,7 +10,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -19,7 +18,6 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
       const data = await api.login(formData);
@@ -29,15 +27,13 @@ const LoginPage = () => {
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
+      console.error("Login error:", err.message); // Log only
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, provider);
@@ -51,8 +47,7 @@ const LoginPage = () => {
       toast.success("Google login successful!");
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
+      console.error("Google login error:", err.message); // Log only
     } finally {
       setLoading(false);
     }
@@ -66,7 +61,7 @@ const LoginPage = () => {
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
-        {error && <div className="text-red-600 text-sm text-center">{error}</div>}
+        {/* Removed error display here */}
 
         <input
           type="email"

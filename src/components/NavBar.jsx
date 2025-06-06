@@ -1,89 +1,103 @@
-import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState, useContext } from "react";
+
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+ const { user, logout } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem("user");
-      if (savedUser && savedUser !== "undefined") {
-        setUser(JSON.parse(savedUser));
-      }
-    } catch (err) {
-      console.error("Error parsing user from localStorage:", err);
-      localStorage.removeItem("user"); // Clean up if corrupted
-    }
-  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  logout();         // calls context logout()
+  setMenuOpen(false);
+  navigate("/login");
+};
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-blue-600">EzBook</Link>
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold text-blue-600">
+          EzBook
+        </Link>
 
-      {/* desktop menu */}
+        {/* Desktop menu */}
         <ul className="hidden md:flex gap-6 text-gray-700 items-center">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/facilities">Facilities</Link></li>
           {user && <li><Link to="/bookings">Bookings</Link></li>}
+
           {user ? (
-            <li>
-              <button onClick={handleLogout} className="text-red-600">Logout</button>
-            </li>
+            <>
+              {user.role === "manager" && (
+                <li><Link to="/manager/dashboard">Manager Dashboard</Link></li>
+              )}
+              {user.role === "user" && (
+                <li><Link to="/dashboard">User Dashboard</Link></li>
+              )}
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="text-red-600 hover:underline"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
           ) : (
             <>
               <li><Link to="/login" className="text-blue-600 font-semibold">Login</Link></li>
               <li><Link to="/register">Register</Link></li>
             </>
           )}
-          {user?.role === "manager" && <li><Link to="/manager/dashboard">Manager Dashboard</Link></li>}
-          {user?.role === "user" && <li><Link to="/dashboard">User Dashboard</Link></li>} 
         </ul>
 
-        {/* mobile menu */}
-
+        {/* Mobile hamburger icon */}
         <div className="md:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-blue-600 text-2xl"
+            aria-label="Toggle Menu"
           >
             {menuOpen ? "✖" : "☰"}
           </button>
         </div>
       </div>
 
+      {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-white px-4 py-3 ">
+        <div className="md:hidden bg-white px-6 pb-4">
           <ul className="flex flex-col gap-4 text-gray-700">
-            <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
-            <li><Link to="/facilities" onClick={() => setMenuOpen(false)}>Facilities</Link></li>
-            {user && <li><Link to="/bookings" onClick={() => setMenuOpen(false)}>Bookings</Link></li>}
+            <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+            <li><Link to="/facilities" onClick={closeMenu}>Facilities</Link></li>
+            {user && <li><Link to="/bookings" onClick={closeMenu}>Bookings</Link></li>}
+
             {user ? (
-              <li>
-                <button onClick={handleLogout} className="text-red-600">Logout</button>
-              </li>
+              <>
+                {user.role === "manager" && (
+                  <li><Link to="/manager/dashboard" onClick={closeMenu}>Manager Dashboard</Link></li>
+                )}
+                {user.role === "user" && (
+                  <li><Link to="/dashboard" onClick={closeMenu}>User Dashboard</Link></li>
+                )}
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="text-red-600 hover:underline"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
             ) : (
               <>
-                <li><Link to="/login" onClick={() => setMenuOpen(false)} className="text-blue-600 font-semibold">Login</Link></li>
-                <li><Link to="/register" onClick={() => setMenuOpen(false)}>Register</Link></li>
+                <li><Link to="/login" onClick={closeMenu}>Login</Link></li>
+                <li><Link to="/register" onClick={closeMenu}>Register</Link></li>
               </>
             )}
-            {user?.role === "manager" && (
-    <li><Link to="/manager/dashboard" onClick={() => setMenuOpen(false)}>Manager Dashboard</Link></li>
-  )}
-  {user?.role === "user" && (
-    <li><Link to="/dashboard" onClick={() => setMenuOpen(false)}>User Dashboard</Link></li>
-  )}
-
-            
           </ul>
         </div>
       )}
