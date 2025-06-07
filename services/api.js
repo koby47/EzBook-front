@@ -62,10 +62,14 @@ export const api = {
 }
 ,
 async userUpdateBooking(id, payload) {
-  if (!id) throw new Error("Booking ID is missing");
+  if (!id) {
+    console.error("Missing booking ID", payload);
+    throw new Error("Booking ID is missing");
+  }
   const res = await axiosInstance.patch(`/api/bookings/user/${id}`, payload);
   return res.data;
-},
+}
+,
  async cancelBooking(id) {
   const res = await axiosInstance.patch(`/api/bookings/user/${id}`, {
     status: "cancelled",

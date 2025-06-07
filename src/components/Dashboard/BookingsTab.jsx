@@ -31,14 +31,17 @@ const BookingsTab = () => {
   }, []);
 
   const handleCancel = async (id) => {
-    try {
-      await api.userUpdateBooking(id, { status: "cancelled" });
-      toast.success("Booking cancelled");
-      fetchBookings();
-    } catch (err) {
-      toast.error("Cancellation failed");
-    }
-  };
+  console.log("Cancelling booking with ID:", id); 
+  try {
+    await api.userUpdateBooking(id, { status: "cancelled" });
+    toast.success("Booking cancelled");
+    fetchBookings();
+  } catch (err) {
+    console.error("Cancel error:", err); // 
+    toast.error("Cancellation failed");
+  }
+};
+
 
   const openEdit = (booking) => {
     setSelectedBooking(booking);
@@ -76,7 +79,7 @@ const BookingsTab = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {bookings.map((booking) => (
             <div
-              key={booking._id}
+              key={booking._id || booking.id}
               className="bg-white shadow rounded p-4 space-y-2 border border-blue-100"
             >
               <h4 className="text-blue-700 font-semibold">
@@ -104,7 +107,7 @@ const BookingsTab = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleCancel(booking._id)}
+                    onClick={() => handleCancel(booking._id ||booking.id)}
                     className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 text-sm"
                   >
                     Cancel
