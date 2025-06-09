@@ -5,11 +5,9 @@ import { api } from "../../../services/api";
 const CLOUDINARY_BASE_URL = "https://res.cloudinary.com/ddsuwfx4o/image/upload/";
 
 const FacilityCard = ({ facility }) => {
-  console.log("🔍 Facility prop:", facility); // Debug
-
-  const imageUrl = facility.pictures?.length
-    ? `${CLOUDINARY_BASE_URL}${facility.pictures[0]}`
-    : "/fallback.jpg";
+  const imageUrl = facility.pictures?.[0]?.startsWith("http")
+    ? facility.pictures[0]
+    : `${CLOUDINARY_BASE_URL}${facility.pictures?.[0] || ""}`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
@@ -17,7 +15,7 @@ const FacilityCard = ({ facility }) => {
     date: "",
     startTime: "",
     endTime: "",
-    package: ""
+    package: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -45,10 +43,8 @@ const FacilityCard = ({ facility }) => {
       date: form.date,
       startTime: form.startTime,
       endTime: form.endTime || "",
-      package: form.package || ""
+      package: form.package || "",
     };
-
-    console.log("📦 Booking Payload:", bookingData); // Debug
 
     setLoading(true);
     try {
@@ -74,6 +70,10 @@ const FacilityCard = ({ facility }) => {
         src={imageUrl}
         alt={facility.name}
         className="w-full h-40 object-cover rounded-t"
+        onError={(e) => {
+          e.target.src = "/fallback.jpg";
+          console.warn("Image failed to load:", e.target.src);
+        }}
       />
       <div className="p-4 space-y-2">
         <h3 className="text-lg font-semibold text-blue-600">{facility.name}</h3>
