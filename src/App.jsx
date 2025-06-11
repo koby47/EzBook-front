@@ -9,6 +9,9 @@ import AdminLogin from './components/pages/AdminLogin';
 import { Routes, Route } from 'react-router-dom';
 import PrivateRoute from "./components/routes/PrivateRoute";
 import UserDashboardLayout from './components/Dashboard/UserDashboardLayout';
+import EmailVerified from './components/pages/EmailVerified';
+import InvalidToken from './components/pages/InvalidToken';
+import ErrorVerifying from './components/pages/ErrorVerifying'
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/email-verified" element={<EmailVerified/>} />
+        <Route path="/invalid-token" element={<InvalidToken/>} />
+        <Route path="/error-verifying" element={<ErrorVerifying />} />
         <Route path="/dashboard" element={
          <PrivateRoute>
       <UserDashboardLayout />
