@@ -43,11 +43,18 @@ const LoginPage = () => {
       const data = await api.loginWithGoogle(credential);
       if (data.user.role === "admin") throw new Error("Not authorized to access");
 
+      //save token so axios can use it
+      localStorage.setItem("token",data.token);
+      localStorage.setItem("user",JSON.stringify(data.user));
+      console.log("JWT:",data.token);
+
       login(data);
       toast.success("Google login successful!");
       navigate("/dashboard");
     } catch (err) {
-      console.error("Google login error:", err.message); // Log only
+      console.error("Google login error:", err.message); // 
+      // Log only
+      toast.error(err.message || "Google login failed");
     } finally {
       setLoading(false);
     }
