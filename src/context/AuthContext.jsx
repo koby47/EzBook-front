@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Invalid user data in localStorage:", err);
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-    }
+    } 
   }, []);
 
   const login = (userData) => {
