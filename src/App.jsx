@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import PrivateRoute from './components/routes/PrivateRoute';
 import Spinner from './components/Spinner';
+import NotFound from './components/pages/notFound';
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import('./components/pages/HomePage'));
@@ -18,12 +19,18 @@ const InvalidToken = lazy(() => import('./components/pages/InvalidToken'));
 const ErrorVerifying = lazy(() => import('./components/pages/ErrorVerifying'));
 const UserDashboardLayout = lazy(() => import('./components/Dashboard/UserDashboardLayout'));
 
+
+
 function App() {
   return (
     <>
       <NavBar />
 
-      <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Spinner /></div>}>
+      <Suspense fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          <Spinner />
+        </div>
+      }>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/facilities" element={<FacilitiesPage />} />
@@ -34,14 +41,12 @@ function App() {
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/error-verifying" element={<ErrorVerifying />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <UserDashboardLayout />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <UserDashboardLayout />
+            </PrivateRoute>
+          } />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </>
