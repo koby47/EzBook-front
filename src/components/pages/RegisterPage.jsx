@@ -47,7 +47,7 @@ const RegisterPage = () => {
 
       //store token and user info
       localStorage.setItem("token",data.token);//required for protected API access
-      login(data.user);//Your AuthContext login method
+      login({ user: data.user, token: data.token });//Your AuthContext login method
       toast.success("Google sign-up successful!");
       navigate("/dashboard");
     } catch (err) {
