@@ -43,8 +43,11 @@ const RegisterPage = () => {
       const googleUser = result.user;
       const credential = await googleUser.getIdToken();
 
-      const data = await api.registerWithGoogle(credential, formData.role); // must support backend
-      login(data.user);
+      const data = await api.loginWithGoogle(credential,formData.role); 
+
+      //store token and user info
+      localStorage.setItem("token",data.token);//required for protected API access
+      login(data.user);//Your AuthContext login method
       toast.success("Google sign-up successful!");
       navigate("/dashboard");
     } catch (err) {
