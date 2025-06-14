@@ -9,10 +9,10 @@ export const api = {
   },
 
   // Register
-  async register(userData) {
-    const res = await axiosInstance.post("/api/user/register", userData);
-    return res.data;
-  },
+  // async register(userData) {
+  //   const res = await axiosInstance.post("/api/user/register", userData);
+  //   return res.data;
+  // },
 
   // Login
   async login(userData) {
@@ -24,6 +24,7 @@ export const api = {
   async loginWithGoogle(googleToken) {
     const res = await axiosInstance.post("/api/user/google-login", {
       token: googleToken,
+      role,
     });
     return res.data;
   },
