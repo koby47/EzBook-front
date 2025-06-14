@@ -21,7 +21,7 @@ export const api = {
   },
 
   // Login with Google
-  async loginWithGoogle(googleToken) {
+  async loginWithGoogle(googleToken,role ="user" ) {
     const res = await axiosInstance.post("/api/user/google-login", {
       token: googleToken,
       role,
