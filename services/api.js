@@ -14,6 +14,14 @@ export const api = {
   //   return res.data;
   // },
 
+
+
+  // Get single facility by ID
+async getFacilityById(id) {
+  const res = await axiosInstance.get(`/api/facility/${id}`);
+  return res.data.facility; // Adjust based on actual backend response shape
+},
+
   // Login
   async login(userData) {
     const res = await axiosInstance.post("/api/user/login", userData);

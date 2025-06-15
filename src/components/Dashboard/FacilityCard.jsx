@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const CLOUDINARY_BASE_URL = "https://res.cloudinary.com/ddsuwfx4o/image/upload/";
 
 const FacilityCard = ({ facility }) => {
+ const navigate = useNavigate();
+
+  console.log("Facility ID:", facility._id || facility.id);
+
+  
   const imageUrl = facility.pictures?.[0]?.startsWith("http")
     ? facility.pictures[0]
     : `${CLOUDINARY_BASE_URL}${facility.pictures?.[0] || ""}`;
@@ -89,9 +95,12 @@ const FacilityCard = ({ facility }) => {
           >
             Book Now
           </button>
-          <button className="text-sm text-blue-600 border border-blue-600 px-3 py-1 rounded hover:bg-blue-100">
-            View Details
-          </button>
+          <button
+        className="text-sm text-blue-600 border border-blue-600 px-3 py-1 rounded hover:bg-blue-100"
+        onClick={() => navigate(`/facilities/${facility._id || facility.id}`)} 
+      >
+        View Details
+      </button>
         </div>
       </div>
 

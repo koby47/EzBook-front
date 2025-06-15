@@ -18,7 +18,7 @@ const EmailVerified = lazy(() => import('./components/pages/EmailVerified'));
 const InvalidToken = lazy(() => import('./components/pages/InvalidToken'));
 const ErrorVerifying = lazy(() => import('./components/pages/ErrorVerifying'));
 const UserDashboardLayout = lazy(() => import('./components/Dashboard/UserDashboardLayout'));
-
+const FacilityDetails = lazy(() => import('./components/pages/FacilityDetails'));
 
 
 function App() {
@@ -41,6 +41,7 @@ function App() {
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/error-verifying" element={<ErrorVerifying />} />
+          <Route path="/facilities/:id" element={<FacilityDetails />} />
           <Route path="/dashboard" element={
             <PrivateRoute>
               <UserDashboardLayout />
