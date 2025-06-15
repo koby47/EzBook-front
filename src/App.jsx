@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import PrivateRoute from './components/routes/PrivateRoute';
 import Spinner from './components/Spinner';
-import NotFound from './components/pages/notFound';
+
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import('./components/pages/HomePage'));
@@ -19,6 +19,7 @@ const InvalidToken = lazy(() => import('./components/pages/InvalidToken'));
 const ErrorVerifying = lazy(() => import('./components/pages/ErrorVerifying'));
 const UserDashboardLayout = lazy(() => import('./components/Dashboard/UserDashboardLayout'));
 const FacilityDetails = lazy(() => import('./components/pages/FacilityDetails'));
+const NotFound =lazy(()=> import('./components/pages/NotFound'))
 
 
 function App() {
