@@ -36,6 +36,19 @@ async getFacilityById(id) {
     });
     return res.data;
   },
+  // Upload user avatar
+async uploadAvatar(formData) {
+  const res = await axiosInstance.patch("/api/user/me/avatar", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+},
+
+// Update profile name/email
+async updateProfile(payload) {
+  const res = await axiosInstance.patch("/api/user/me", payload);
+  return res.data;
+},
 
   // Get logged-in user
   async getCurrentUser() {
