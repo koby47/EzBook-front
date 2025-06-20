@@ -20,6 +20,8 @@ const ErrorVerifying = lazy(() => import('./components/pages/ErrorVerifying'));
 const UserDashboardLayout = lazy(() => import('./components/Dashboard/UserDashboardLayout'));
 const FacilityDetails = lazy(() => import('./components/pages/FacilityDetails'));
 const NotFound =lazy(()=> import('./components/pages/NotFound'))
+const FacilityManagerDashboard = lazy(() => import('./components/Dashboard/FacilityManagerDashboard'));
+
 
 
 function App() {
@@ -48,6 +50,11 @@ function App() {
               <UserDashboardLayout />
             </PrivateRoute>
           } />
+          <Route path="/manager-dashboard" element={
+    <PrivateRoute>
+      <FacilityManagerDashboard />
+    </PrivateRoute>
+  } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -13,52 +13,66 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const data = await api.login(formData);
-      if (data.user.role === "admin") throw new Error("Not authorized to access");
 
-      login(data);
-      toast.success("Login successful!");
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const data = await api.login(formData);
+    if (data.user.role === "admin") throw new Error("Not authorized to access");
+
+    login(data);
+    toast.success("Login successful!");
+
+    // ✅ Redirect based on role
+    if (data.user.role === "manager") {
+      navigate("/manager-dashboard");
+    } else {
       navigate("/dashboard");
-    } catch (err) {
-      console.error("Login error:", err.message); // Log only
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Login error:", err.message);
+    toast.error(err.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const googleUser = result.user;
-      const credential = await googleUser.getIdToken();
+  setLoading(true);
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const googleUser = result.user;
+    const credential = await googleUser.getIdToken();
 
-      const data = await api.loginWithGoogle(credential);
-      if (data.user.role === "admin") throw new Error("Not authorized to access");
+    const data = await api.loginWithGoogle(credential);
+    if (data.user.role === "admin") throw new Error("Not authorized to access");
 
-      //save token so axios can use it
-      localStorage.setItem("token",data.token);
-      localStorage.setItem("user",JSON.stringify(data.user));
-      console.log("JWT:",data.token);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    console.log("JWT:", data.token);
 
-      login(data);
-      toast.success("Google login successful!");
+    login(data);
+    toast.success("Google login successful!");
+
+    // ✅ Redirect based on role
+    if (data.user.role === "manager") {
+      navigate("/manager-dashboard");
+    } else {
       navigate("/dashboard");
-    } catch (err) {
-      console.error("Google login error:", err.message); // 
-      // Log only
-      toast.error(err.message || "Google login failed");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Google login error:", err.message);
+    toast.error(err.message || "Google login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div  className="min-h-screen flex items-center justify-center bg-cover bg-center px-4"
