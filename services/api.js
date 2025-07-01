@@ -8,18 +8,13 @@ export const api = {
     return res.data.facilities; // ✅ ONLY return the array
   },
 
-  // Register
-  // async register(userData) {
-  //   const res = await axiosInstance.post("/api/user/register", userData);
-  //   return res.data;
-  // },
 
 
 
   // Get single facility by ID
 async getFacilityById(id) {
   const res = await axiosInstance.get(`/api/facility/${id}`);
-  return res.data.facility; // Adjust based on actual backend response shape
+  return res.data.facility; // 
 },
 
   // Login
@@ -99,7 +94,10 @@ async userUpdateBooking(id, payload) {
   return res.data;
 },
 
-
+async getManagerOverview() {
+  const res = await axiosInstance.get("/api/manager/overview");
+  return res.data;
+},
 
   // Create a new facility (with image upload)
   async createFacility(facilityData) {
