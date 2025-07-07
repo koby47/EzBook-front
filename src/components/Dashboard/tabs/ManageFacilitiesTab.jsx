@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../../../services/api";
 import AddFacilityForm from "../../AddFacilityForm";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const ManageFacilitiesTab = () => {
   const [facilities, setFacilities] = useState([]);
@@ -12,8 +12,8 @@ const ManageFacilitiesTab = () => {
   const fetchFacilities = async () => {
     setLoading(true);
     try {
-      const data = await api.getFacilities();
-      setFacilities(data);
+      const res = await api.getFacilities();
+      setFacilities(res.facilities || res); // Adjust based on actual API response
       setError("");
     } catch (err) {
       console.error("Fetch facilities error:", err.response?.data || err.message);
@@ -27,41 +27,40 @@ const ManageFacilitiesTab = () => {
     fetchFacilities();
   }, []);
 
+  const handleEdit = (facility) => {
+    console.log("Edit facility:", facility);
+    // TODO: Implement edit modal or navigation to edit page
+  };
+
+  const handleDelete = async (facilityId) => {
+    if (!window.confirm("Are you sure you want to delete this facility?")) return;
+    try {
+      await api.deleteFacility(facilityId);
+      fetchFacilities();
+    } catch (err) {
+      console.error("Delete facility error:", err.response?.data || err.message);
+      alert("Failed to delete facility.");
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Manage Facilities</h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-md transition"
-        >
-          <PlusIcon className="w-5 h-5" />
-          Add Facility
-        </button>
-      </div>
+      <Header onAdd={() => setShowAddModal(true)} />
 
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, idx) => (
-            <div key={idx} className="animate-pulse bg-white h-60 rounded shadow" />
-          ))}
-        </div>
-      )}
+      {loading && <LoadingSkeleton />}
 
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       {!loading && facilities.length === 0 && (
-        <div className="text-center py-20 text-gray-500">
-          No facilities added yet.
-        </div>
+        <EmptyState message="No facilities added yet." />
       )}
 
       {!loading && facilities.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {facilities.map((facility) => (
-            <FacilityCard key={facility._id} facility={facility} />
-          ))}
-        </div>
+        <FacilityGrid
+          facilities={facilities}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       )}
 
       {showAddModal && (
@@ -74,8 +73,46 @@ const ManageFacilitiesTab = () => {
   );
 };
 
-const FacilityCard = ({ facility }) => (
-  <div className="bg-white rounded shadow hover:shadow-lg transition duration-200 overflow-hidden">
+const Header = ({ onAdd }) => (
+  <div className="flex justify-between items-center mb-6">
+    <h2 className="text-2xl font-bold text-gray-800">Manage Facilities</h2>
+    <button
+      onClick={onAdd}
+      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-md transition"
+    >
+      <PlusIcon className="w-5 h-5" />
+      Add Facility
+    </button>
+  </div>
+);
+
+const LoadingSkeleton = () => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {[...Array(6)].map((_, idx) => (
+      <div key={idx} className="animate-pulse bg-white h-60 rounded shadow" />
+    ))}
+  </div>
+);
+
+const EmptyState = ({ message }) => (
+  <div className="text-center py-20 text-gray-500">{message}</div>
+);
+
+const FacilityGrid = ({ facilities, onEdit, onDelete }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {facilities.map((facility) => (
+      <FacilityCard
+        key={facility._id}
+        facility={facility}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    ))}
+  </div>
+);
+
+const FacilityCard = ({ facility, onEdit, onDelete }) => (
+  <div className="bg-white rounded shadow hover:shadow-lg transition duration-200 overflow-hidden relative">
     {facility.pictures?.[0] ? (
       <img
         src={facility.pictures[0]}
@@ -87,6 +124,7 @@ const FacilityCard = ({ facility }) => (
         No Image
       </div>
     )}
+
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-1">{facility.name}</h3>
       <p className="text-gray-600 mb-1">{facility.location}</p>
@@ -100,6 +138,21 @@ const FacilityCard = ({ facility }) => (
       >
         {facility.availability ? "Available" : "Unavailable"}
       </span>
+    </div>
+
+    <div className="absolute top-2 right-2 flex gap-2">
+      <button
+        onClick={() => onEdit(facility)}
+        className="bg-yellow-200 hover:bg-yellow-300 p-1 rounded"
+      >
+        <PencilIcon className="w-4 h-4 text-yellow-800" />
+      </button>
+      <button
+        onClick={() => onDelete(facility._id)}
+        className="bg-red-200 hover:bg-red-300 p-1 rounded"
+      >
+        <TrashIcon className="w-4 h-4 text-red-800" />
+      </button>
     </div>
   </div>
 );
