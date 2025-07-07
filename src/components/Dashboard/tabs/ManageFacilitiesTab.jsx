@@ -143,9 +143,9 @@ const FacilityCard = ({ facility, onEdit, onDelete }) => (
     <div className="absolute top-2 right-2 flex gap-2">
       <button
         onClick={() => onEdit(facility)}
-        className="bg-yellow-200 hover:bg-yellow-300 p-1 rounded"
+        className="bg-blue-500 hover:bg-blue-300 p-1 rounded"
       >
-        <PencilIcon className="w-4 h-4 text-yellow-800" />
+        <PencilIcon className="w-4 h-4 text-gray-200" />
       </button>
       <button
         onClick={() => onDelete(facility._id)}
