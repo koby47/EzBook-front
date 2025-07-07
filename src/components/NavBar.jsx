@@ -79,8 +79,9 @@ const Navbar = () => {
             {user ? (
               <>
                 {user.role === "manager" && (
-                  <li><Link to="/manager-dashboardq  " onClick={closeMenu}>Manager Dashboard</Link></li>
-                )}
+                <Link to="/manager-dashboard">Manager Dashboard</Link>
+
+              )}
                 {user.role === "user" && (
                   <li><Link to="/dashboard" onClick={closeMenu}>User Dashboard</Link></li>
                 )}
