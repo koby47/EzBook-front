@@ -1,4 +1,5 @@
 // services/api.js
+import { Form } from 'react-router-dom';
 import axiosInstance from './axiosInstance';
 
 export const api = {
@@ -117,7 +118,35 @@ async getManagerOverview() {
     });
 
     return res.data;
-  }
+  },
+
+  //  Update facility (with image upload)
+  async updateFacility(id, data) {
+    const formData = new FormData();
+
+    for (const key in data) {
+      if (key === "pictures" && Array.isArray(data.pictures)) {
+        data.pictures.forEach((pic) => {
+          formData.append("pictures", pic);
+        });
+      } else {
+        formData.append(key, data[key]);
+      }
+    }
+
+    const res = await axiosInstance.put(`/api/facility/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return res.data.facility;
+  },
+
+  //  Delete facility by ID
+  async deleteFacility(id) {
+    const res = await axiosInstance.delete(`/api/facility/${id}`);
+    return res.data;
+  },
+
   
 };
 

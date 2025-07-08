@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../../../services/api";
 import AddFacilityForm from "../../AddFacilityForm";
+import EditFacilityForm from "../../EditFacilityForm";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const ManageFacilitiesTab = () => {
   const [facilities, setFacilities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingFacility, setEditingFacility] = useState(null);
   const [error, setError] = useState("");
 
   const fetchFacilities = async () => {
     setLoading(true);
     try {
       const res = await api.getFacilities();
-      setFacilities(res.facilities || res); // Adjust based on actual API response
+      setFacilities(res.facilities || res);
       setError("");
     } catch (err) {
       console.error("Fetch facilities error:", err.response?.data || err.message);
@@ -26,11 +28,6 @@ const ManageFacilitiesTab = () => {
   useEffect(() => {
     fetchFacilities();
   }, []);
-
-  const handleEdit = (facility) => {
-    console.log("Edit facility:", facility);
-    // TODO: Implement edit modal or navigation to edit page
-  };
 
   const handleDelete = async (facilityId) => {
     if (!window.confirm("Are you sure you want to delete this facility?")) return;
@@ -58,7 +55,7 @@ const ManageFacilitiesTab = () => {
       {!loading && facilities.length > 0 && (
         <FacilityGrid
           facilities={facilities}
-          onEdit={handleEdit}
+          onEdit={setEditingFacility}
           onDelete={handleDelete}
         />
       )}
@@ -67,6 +64,14 @@ const ManageFacilitiesTab = () => {
         <AddFacilityForm
           onClose={() => setShowAddModal(false)}
           onFacilityAdded={fetchFacilities}
+        />
+      )}
+
+      {editingFacility && (
+        <EditFacilityForm
+          facility={editingFacility}
+          onClose={() => setEditingFacility(null)}
+          onFacilityUpdated={fetchFacilities}
         />
       )}
     </div>
@@ -143,15 +148,15 @@ const FacilityCard = ({ facility, onEdit, onDelete }) => (
     <div className="absolute top-2 right-2 flex gap-2">
       <button
         onClick={() => onEdit(facility)}
-        className="bg-blue-500 hover:bg-blue-300 p-1 rounded"
+        className="bg-blue-500 hover:bg-blue-600 p-1 rounded"
       >
-        <PencilIcon className="w-4 h-4 text-gray-200" />
+        <PencilIcon className="w-4 h-4 text-white" />
       </button>
       <button
         onClick={() => onDelete(facility._id)}
-        className="bg-red-200 hover:bg-red-300 p-1 rounded"
+        className="bg-red-500 hover:bg-red-600 p-1 rounded"
       >
-        <TrashIcon className="w-4 h-4 text-red-800" />
+        <TrashIcon className="w-4 h-4 text-white" />
       </button>
     </div>
   </div>

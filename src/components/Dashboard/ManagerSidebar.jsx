@@ -28,7 +28,7 @@ const ManagerSidebar = ({ activeTab, setActiveTab, isMobile, setSidebarOpen }) =
   };
 
   return (
-    <div className="w-64 bg-white border-r shadow-sm flex flex-col min-h-screen">
+    <div className="w-64 bg-white shadow-sm flex flex-col min-h-screen">
       <div className="flex-1">
         {tabs.map((tab) => (
           <button
@@ -49,7 +49,7 @@ const ManagerSidebar = ({ activeTab, setActiveTab, isMobile, setSidebarOpen }) =
       <div className="border-t px-6 py-4">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2 text-red-600 hover:bg-red-50 px-3 py-2 rounded"
+          className="w-full flex items-center gap-2 text-red-600 hover:bg-red-50 px-1 py-1 rounded"
         >
           <LogOut size={18} /> Logout
         </button>
