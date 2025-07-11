@@ -83,7 +83,6 @@ const FacilityCard = ({ facility }) => {
       />
       <div className="p-4 space-y-2">
         <h3 className="text-lg font-semibold text-blue-600">{facility.name}</h3>
-        <p className="text-sm text-gray-600">{facility.description}</p>
         <p className="text-sm text-gray-500">
           Type: {facility.type} | Location: {facility.location}
         </p>

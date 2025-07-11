@@ -15,7 +15,11 @@ const ManageFacilitiesTab = () => {
     setLoading(true);
     try {
       const res = await api.getFacilities();
-      setFacilities(res.facilities || res);
+      const data = (res.facilities || res).map((fac, index) => ({
+        ...fac,
+        _id: fac._id || fac.id || `fallback-${index}`,
+      }));
+      setFacilities(data);
       setError("");
     } catch (err) {
       console.error("Fetch facilities error:", err.response?.data || err.message);
@@ -30,6 +34,10 @@ const ManageFacilitiesTab = () => {
   }, []);
 
   const handleDelete = async (facilityId) => {
+    if (!facilityId) {
+      console.error("Delete error: Missing facility ID");
+      return;
+    }
     if (!window.confirm("Are you sure you want to delete this facility?")) return;
     try {
       await api.deleteFacility(facilityId);
