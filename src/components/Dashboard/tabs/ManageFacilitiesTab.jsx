@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../../../services/api";
 import AddFacilityForm from "../../AddFacilityForm";
 import EditFacilityForm from "../../EditFacilityForm";
-import FacilityDetailsModal from "../../ui/FacilityDetailsModal";
 import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 
 const ManageFacilitiesTab = () => {
@@ -10,15 +10,20 @@ const ManageFacilitiesTab = () => {
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingFacility, setEditingFacility] = useState(null);
-  const [viewingFacility, setViewingFacility] = useState(null);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const fetchFacilities = async () => {
     setLoading(true);
     try {
       const res = await api.getFacilities();
-      setFacilities(res.facilities || res);
+      const data = (res.facilities || res).map((fac, index) => ({
+        ...fac,
+        _id: fac._id || fac.id || `fallback-${index}`,
+      }));
+      setFacilities(data);
       setError("");
+      console.log("Fetched facilities data:", data);
     } catch (err) {
       console.error("Fetch facilities error:", err.response?.data || err.message);
       setError("Failed to load facilities.");
@@ -46,31 +51,33 @@ const ManageFacilitiesTab = () => {
     }
   };
 
+  const handleView = (facility) => {
+    if (!facility._id) {
+      console.error("Facility ID missing for view action", facility);
+      return;
+    }
+    navigate(`/manager/facilities/${facility._id}`);
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <Header onAdd={() => setShowAddModal(true)} />
 
       {loading && <LoadingSkeleton />}
       {error && <p className="text-red-500 text-center">{error}</p>}
-
-      {!loading && facilities.length === 0 && (
-        <EmptyState message="No facilities added yet." />
-      )}
+      {!loading && facilities.length === 0 && <EmptyState message="No facilities added yet." />}
 
       {!loading && facilities.length > 0 && (
         <FacilityGrid
           facilities={facilities}
           onEdit={setEditingFacility}
           onDelete={handleDelete}
-          onView={setViewingFacility} // ✅ pass onView here
+          onView={handleView}
         />
       )}
 
       {showAddModal && (
-        <AddFacilityForm
-          onClose={() => setShowAddModal(false)}
-          onFacilityAdded={fetchFacilities}
-        />
+        <AddFacilityForm onClose={() => setShowAddModal(false)} onFacilityAdded={fetchFacilities} />
       )}
 
       {editingFacility && (
@@ -78,13 +85,6 @@ const ManageFacilitiesTab = () => {
           facility={editingFacility}
           onClose={() => setEditingFacility(null)}
           onFacilityUpdated={fetchFacilities}
-        />
-      )}
-
-      {viewingFacility && (
-        <FacilityDetailsModal
-          facility={viewingFacility}
-          onClose={() => setViewingFacility(null)}
         />
       )}
     </div>
@@ -124,7 +124,7 @@ const FacilityGrid = ({ facilities, onEdit, onDelete, onView }) => (
         facility={facility}
         onEdit={onEdit}
         onDelete={onDelete}
-        onView={onView} // ✅ passed down here
+        onView={onView}
       />
     ))}
   </div>
@@ -161,12 +161,6 @@ const FacilityCard = ({ facility, onEdit, onDelete, onView }) => (
 
     <div className="absolute top-2 right-2 flex gap-2">
       <button
-        onClick={() => onView(facility)} // ✅ navigate to details page
-        className="bg-green-500 hover:bg-green-600 p-1 rounded"
-      >
-        <EyeIcon className="w-4 h-4 text-white" />
-      </button>
-      <button
         onClick={() => onEdit(facility)}
         className="bg-blue-500 hover:bg-blue-600 p-1 rounded"
       >
@@ -178,7 +172,14 @@ const FacilityCard = ({ facility, onEdit, onDelete, onView }) => (
       >
         <TrashIcon className="w-4 h-4 text-white" />
       </button>
+      <button
+        onClick={() => onView(facility)}
+        className="bg-green-500 hover:bg-green-600 p-1 rounded"
+      >
+        <EyeIcon className="w-4 h-4 text-white" />
+      </button>
     </div>
   </div>
 );
+
 export default ManageFacilitiesTab;

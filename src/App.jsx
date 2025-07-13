@@ -21,6 +21,7 @@ const UserDashboardLayout = lazy(() => import('./components/Dashboard/UserDashbo
 const FacilityDetails = lazy(() => import('./components/pages/FacilityDetails'));
 const NotFound =lazy(()=> import('./components/pages/NotFound'))
 const FacilityManagerDashboard = lazy(() => import('./components/Dashboard/FacilityManagerDashboard'));
+const FacilityDetailsPage = lazy(() => import ('./components/pages/FacilityDetailsPage'));
 
 
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="/invalid-token" element={<InvalidToken />} />
           <Route path="/error-verifying" element={<ErrorVerifying />} />
           <Route path="/facilities/:id" element={<FacilityDetails />} />
+          <Route path="/manager/facilities/:id" element={<FacilityDetailsPage />} />
           <Route path="/dashboard" element={
             <PrivateRoute>
               <UserDashboardLayout />
