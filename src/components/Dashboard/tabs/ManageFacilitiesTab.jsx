@@ -2,24 +2,22 @@ import React, { useEffect, useState } from "react";
 import { api } from "../../../../services/api";
 import AddFacilityForm from "../../AddFacilityForm";
 import EditFacilityForm from "../../EditFacilityForm";
-import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import FacilityDetailsModal from "../../ui/FacilityDetailsModal";
+import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 
 const ManageFacilitiesTab = () => {
   const [facilities, setFacilities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingFacility, setEditingFacility] = useState(null);
+  const [viewingFacility, setViewingFacility] = useState(null);
   const [error, setError] = useState("");
 
   const fetchFacilities = async () => {
     setLoading(true);
     try {
       const res = await api.getFacilities();
-      const data = (res.facilities || res).map((fac, index) => ({
-        ...fac,
-        _id: fac._id || fac.id || `fallback-${index}`,
-      }));
-      setFacilities(data);
+      setFacilities(res.facilities || res);
       setError("");
     } catch (err) {
       console.error("Fetch facilities error:", err.response?.data || err.message);
@@ -53,7 +51,6 @@ const ManageFacilitiesTab = () => {
       <Header onAdd={() => setShowAddModal(true)} />
 
       {loading && <LoadingSkeleton />}
-
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       {!loading && facilities.length === 0 && (
@@ -65,6 +62,7 @@ const ManageFacilitiesTab = () => {
           facilities={facilities}
           onEdit={setEditingFacility}
           onDelete={handleDelete}
+          onView={setViewingFacility} // ✅ pass onView here
         />
       )}
 
@@ -80,6 +78,13 @@ const ManageFacilitiesTab = () => {
           facility={editingFacility}
           onClose={() => setEditingFacility(null)}
           onFacilityUpdated={fetchFacilities}
+        />
+      )}
+
+      {viewingFacility && (
+        <FacilityDetailsModal
+          facility={viewingFacility}
+          onClose={() => setViewingFacility(null)}
         />
       )}
     </div>
@@ -111,7 +116,7 @@ const EmptyState = ({ message }) => (
   <div className="text-center py-20 text-gray-500">{message}</div>
 );
 
-const FacilityGrid = ({ facilities, onEdit, onDelete }) => (
+const FacilityGrid = ({ facilities, onEdit, onDelete, onView }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {facilities.map((facility) => (
       <FacilityCard
@@ -119,12 +124,13 @@ const FacilityGrid = ({ facilities, onEdit, onDelete }) => (
         facility={facility}
         onEdit={onEdit}
         onDelete={onDelete}
+        onView={onView} // ✅ passed down here
       />
     ))}
   </div>
 );
 
-const FacilityCard = ({ facility, onEdit, onDelete }) => (
+const FacilityCard = ({ facility, onEdit, onDelete, onView }) => (
   <div className="bg-white rounded shadow hover:shadow-lg transition duration-200 overflow-hidden relative">
     {facility.pictures?.[0] ? (
       <img
@@ -155,6 +161,12 @@ const FacilityCard = ({ facility, onEdit, onDelete }) => (
 
     <div className="absolute top-2 right-2 flex gap-2">
       <button
+        onClick={() => onView(facility)} // ✅ navigate to details page
+        className="bg-green-500 hover:bg-green-600 p-1 rounded"
+      >
+        <EyeIcon className="w-4 h-4 text-white" />
+      </button>
+      <button
         onClick={() => onEdit(facility)}
         className="bg-blue-500 hover:bg-blue-600 p-1 rounded"
       >
@@ -169,5 +181,4 @@ const FacilityCard = ({ facility, onEdit, onDelete }) => (
     </div>
   </div>
 );
-
 export default ManageFacilitiesTab;
