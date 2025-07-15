@@ -146,7 +146,17 @@ async getManagerOverview() {
     const res = await axiosInstance.delete(`/api/facility/${id}`);
     return res.data;
   },
+ // Get all bookings (manager, admin)
+  async getBookings() {
+    const res = await axiosInstance.get("/api/bookings");
+    return res.data;
+  },
 
+  // Update booking status (approve or cancel)
+  async updateBookingStatus(id, status) {
+    const res = await axiosInstance.put(`/api/bookings/${id}`, { status });
+    return res.data;
+  },
   
 };
 
