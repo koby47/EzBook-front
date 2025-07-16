@@ -147,10 +147,13 @@ async getManagerOverview() {
     return res.data;
   },
  // Get all bookings (manager, admin)
-  async getBookings() {
-    const res = await axiosInstance.get("/api/bookings");
-    return res.data;
-  },
+async getBookings(filter = "{}", sort = "{}", page = 1, limit = 5) {
+  const res = await axiosInstance.get("/api/bookings", {
+    params: { filter, sort, page, limit },
+  });
+  return res.data;
+},
+
 
   // Update booking status (approve or cancel)
   async updateBookingStatus(id, status) {
