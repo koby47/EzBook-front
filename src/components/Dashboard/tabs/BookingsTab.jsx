@@ -27,7 +27,7 @@ const BookingsTab = () => {
       setLoading(false);
     }
   };
-
+    
   useEffect(() => {
     fetchBookings();
   }, [page, statusFilter]);
