@@ -129,7 +129,7 @@ const BookingsTab = () => {
                   </td>
                   <td className="py-3 px-4 text-center space-x-2">
                     <button
-                      onClick={() => handleStatusUpdate(booking._id, "approved")}
+                      onClick={() => handleStatusUpdate(booking.id, "approved")}
                       disabled={booking.status === "approved"}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition ${
                         booking.status === "approved"
@@ -140,7 +140,7 @@ const BookingsTab = () => {
                       Approve
                     </button>
                     <button
-                      onClick={() => handleStatusUpdate(booking._id, "cancelled")}
+                      onClick={() => handleStatusUpdate(booking.id, "cancelled")}
                       disabled={booking.status === "cancelled"}
                       className={`px-4 py-2 rounded-md text-sm font-medium transition ${
                         booking.status === "cancelled"
