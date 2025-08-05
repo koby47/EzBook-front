@@ -27,7 +27,7 @@ export default function HeroSection() {
       style={{ backgroundImage: "url('/images/herosection.jpg')" }}
     >
       {/* Overlay for background dim */}
-      <div className="absolute inset-0  bg-slate-800/80 z-10" />
+      <div className="absolute inset-0  bg-gray-800/70 z-10" />
 
       {/* Content */}
       <div className="relative z-20 flex items-center justify-center h-full text-white">

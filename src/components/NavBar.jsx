@@ -27,16 +27,16 @@ const Navbar = () => {
         {/* Desktop menu */}
         <ul className="hidden md:flex gap-6 text-gray-700 items-center">
           <li><Link to="/">Home</Link></li>
-          {user && <li><Link to="/bookings">Bookings</Link></li>}
+      
 
           {user ? (
             <>
               {user.role === "manager" && (
-                <Link to="/manager-dashboard">Manager Dashboard</Link>
+                <Link to="/manager-dashboard">Dashboard</Link>
 
               )}
               {user.role === "user" && (
-                <li><Link to="/dashboard">User Dashboard</Link></li>
+                <li><Link to="/dashboard">Dashboard</Link></li>
               )}
               <li>
                 <button
@@ -72,16 +72,16 @@ const Navbar = () => {
         <div className="md:hidden bg-white px-6 pb-4">
           <ul className="flex flex-col gap-4 text-gray-700">
             <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-            {user && <li><Link to="/bookings" onClick={closeMenu}>Bookings</Link></li>}
+      
 
             {user ? (
               <>
                 {user.role === "manager" && (
-                <Link to="/manager-dashboard">Manager Dashboard</Link>
+                <Link to="/manager-dashboard">Dashboard</Link>
 
               )}
                 {user.role === "user" && (
-                  <li><Link to="/dashboard" onClick={closeMenu}>User Dashboard</Link></li>
+                  <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
                 )}
                 <li>
                   <button
