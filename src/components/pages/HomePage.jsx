@@ -1,13 +1,17 @@
+import HeroSection from '../home/HeroSection';
+import FeaturesSection from '../home/FeaturesSection';
+import HowItWorks from '../home/HowItWorks';
+import Footer from '../home/Footer';
 
-
-const HomePage =()=>{
-
-    return (
+const HomePage = () => {
+  return (
     <div>
-     <h1 className="text-center m-10">
-        Welcome To EzBook
-     </h1>
-    </div>)
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorks />
+      <Footer />
+    </div>
+  );
+};
 
-}
-export default HomePage
+export default HomePage;
