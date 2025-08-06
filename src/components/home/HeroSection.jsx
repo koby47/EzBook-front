@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 
@@ -6,7 +6,7 @@ const placeholderSuggestions = [
   "Search facilities near you",
   "Try 'Sports Hall'",
   "Try 'Conference Room'",
-  "Try 'Auditorium'",
+  "Own a facility? Sign up to list it",
 ];
 
 export default function HeroSection() {
@@ -14,7 +14,7 @@ export default function HeroSection() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
   // Rotate placeholder text
-  useState(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % placeholderSuggestions.length);
     }, 3000);
@@ -27,7 +27,7 @@ export default function HeroSection() {
       style={{ backgroundImage: "url('/images/herosection.jpg')" }}
     >
       {/* Overlay for background dim */}
-      <div className="absolute inset-0  bg-gray-800/70 z-10" />
+      <div className="absolute inset-0 bg-gray-800/70 z-10" />
 
       {/* Content */}
       <div className="relative z-20 flex items-center justify-center h-full text-white">
@@ -38,7 +38,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Welcome to Our Booking Platform
+            Discover or Showcase the Best Facilities
           </motion.h1>
 
           <motion.p
@@ -47,7 +47,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Find and reserve the best facilities near you
+            Whether you're booking a space or managing one, we make it simple.
           </motion.p>
 
           {/* Search Input */}
